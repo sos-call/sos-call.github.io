@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>تماس | Anruf</title>
+<style>
+  :root { --bg: #ffffff; --fg: #1a1a1a; --muted: #666; --btn: #1a7f37; --btn-fg: #ffffff; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #111418; --fg: #f2f2f2; --muted: #a0a0a0; --btn: #2ea043; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+         background: var(--bg); color: var(--fg); padding: 16px;
+         font-family: system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif; text-align: center; }
+  main { width: 100%; max-width: 420px; }
+  .label { font-size: 1.2rem; margin: 0 0 8px; }
+  .number { font-size: 3rem; font-weight: 700; margin: 0 0 24px; direction: ltr; unicode-bidi: isolate; }
+  a.call { display: block; background: var(--btn); color: var(--btn-fg); text-decoration: none;
+           font-size: 1.6rem; font-weight: 700; padding: 22px 16px; border-radius: 16px; }
+  p.hint { color: var(--muted); font-size: 0.95rem; margin-top: 20px; line-height: 1.7; }
+  .error { color: #d1242f; }
+</style>
+</head>
+<body>
+<main>
+  <p class="label" id="label"></p>
+  <p class="number" id="number"></p>
+  <a class="call" id="call" href="#">📞 تماس · Anrufen</a>
+  <p class="hint">اگر تماس خودکار شروع نشد، دکمهٔ سبز را بزنید.<br>
+     بعد از تماس، به تلگرام برگردید.</p>
+</main>
+<script>
+  // Only digits (and a leading +) are accepted, so the link can't be made to do anything else.
+  var params = new URLSearchParams(location.search);
+  var n = (params.get("n") || "").replace(/[\s\-\/]/g, "");
+  var label = (params.get("l") || "").slice(0, 60);
+  var number = document.getElementById("number");
+  var call = document.getElementById("call");
+  document.getElementById("label").textContent = label;
+  if (/^\+?[0-9]{3,15}$/.test(n)) {
+    number.textContent = params.get("n");
+    call.href = "tel:" + n;
+    document.title = "📞 " + n;
+    setTimeout(function () { location.href = "tel:" + n; }, 300);
+  } else {
+    number.textContent = "—";
+    number.className = "number error";
+    call.style.display = "none";
+  }
+</script>
+</body>
+</html>
